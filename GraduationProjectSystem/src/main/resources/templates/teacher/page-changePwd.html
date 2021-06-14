@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../css/my.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Essential javascripts for application to work-->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var D = new Date();
+            var y = D.getFullYear();
+            var m = D.getMonth();
+            var d = D.getDate();
+            //设置时间
+            $("#timeShow").text(y + "年" + (m+1) + "月" + d + "日");
+            getStuInfo();
+            getPjInfo();
+
+        });
+        function handler() {
+        }
+        $(document).ready(handler());
+
+        //发送post请求获取学生信息
+        function getStuInfo(){
+            var reqUrl = "/stu/getInfo";
+            $.post(reqUrl.trim(), function (data) {
+                console.log(data);
+                for (var i = 0; i<data.length; i++){
+                    $("#id").text(data[i].id);
+                    $("#cid").text(data[i].cid);
+                    $("#email").text(data[i].email);
+                    $("#name").text(data[i].name);
+                    $("#over").text(data[i].over);
+                    $("#grade").text(data[i].grade);
+                    $("#phone").text(data[i].phone);
+                    $("#admin_class").text(data[i].adminClass);
+                    $("#department").text(data[i].department);
+                    $("#leader").text(data[i].leader);
+                    $("#major").text(data[i].major);
+
+                }
+            });
+        }
+        //发送post请求获取选课信息
+        function getPjInfo() {
+            var reqUrl = "/pj/getPjInfoByStu";
+            $.post(reqUrl, function (data) {
+                for (var i = 0; i<data.length; i++){
+                    console.log(data);
+                    if (data[i].choice){
+                        $("#selectPj").empty();
+                        $("#selectPj").append("<label>所选课题:</label>\n" +
+                            "                        <label id=\"p_name\"></label><br>\n" +
+                            "                        <label>课题负责教师：</label>\n" +
+                            "                        <label id=\"p_teacher\"></label><br>\n" +
+                            "                        <label>课题描述：</label>\n" +
+                            "                        <label id=\"p_description\"></label><br>\n" +
+                            "                        <label>选题时间：</label>\n" +
+                            "                        <label id=\"p_time\"></label><br>\n" +
+                            "                        <label>课题截止日期：</label>\n" +
+                            "                        <label id=\"p_last\"></label><br>");
+                        $("#p_name").text(data[i].pName);
+                        $("#p_description").text("基于springboot的项目");
+                        $("#p_time").text(data[i].pDate);
+                        $("#p_teacher").text(data[i].tName);
+                        $("#p_last").text(data[i].pLast);
+                        $("#is").text("已选课题：" + data[i].pName);
+                    }
+                }
+            });
+        }
+    </script>
+    <title>学生个人信息</title>
+</head>
+<body style="background-color: #E3E3E3">
+<div>
+    <div class="app-title" style="margin-top: 10px">
+        <div style="margin-left: 20px">
+            <h1><i class="fa fa-user fa-lg"></i> 个人信息查看</h1><br>
+            <b><p id="timeShow" style="font-style: normal;margin-left: 30px"></p></b>
+        </div>
+        <ul style="margin-right: 25px" class="app-breadcrumb breadcrumb">
+            <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+            <li class="breadcrumb-item"><a href="#">个人信息查看</a></li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tile" style="height: 800px;">
+                <div style="background-color: whitesmoke;margin: 0 auto;width: 50rem;height: 37.5rem;margin-top: 100px;">
+                    <form action="" method="post">
+                        <h2 style="text-align: center;">修改密码</h2>
+                        <div class="form-group">
+                            <label>账号：</label>
+                            <label id="id" class="form-control no-l-r-t-border" type="email" aria-describedby="emailHelp" ></label>
+                        </div>
+                        <div class="form-group">
+                            <label>原密码：</label>
+                            <input id="pPwd" class="form-control no-l-r-t-border" type="email" aria-describedby="emailHelp" placeholder="原密码" ></input>
+                        </div>
+                        <div class="form-group">
+                            <label>新密码：</label>
+                            <input id="nPwd" class="form-control no-l-r-t-border" type="email" aria-describedby="emailHelp" placeholder="新密码" ></input>
+                        </div>
+                        <div class="form-group">
+                            <label>确认密码：</label>
+                            <input id="rPwd" class="form-control no-l-r-t-border" type="email" aria-describedby="emailHelp" placeholder="确认密码" ></input>
+                        </div>
+                        <input id="cgBtn" type="submit" value="修改" class="btn-block primary" style="height: 40px;" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+</div>
+
+</body>
+</html>

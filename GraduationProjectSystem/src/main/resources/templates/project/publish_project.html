@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <script th:src="@{/js/jquery-3.3.1.min.js}"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function sendBtn(filename) {
+            var url = "/pj/addProject/"+filename;/*得到href的值*/
+            $.ajax({
+                url:url,/*url也可以是json之类的文件等等*/
+                type:'PUT',/*DELETE、POST */
+                success:function (result) {
+                    //判断result结果
+                    if(result){
+                        window.location.reload();
+                    }else{
+                        alert("返回了false")
+                    }
+                }
+            })
+        };
+    </script>
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>课题名称</th>
+                            <th>发布状态</th>
+                            <th>查看详细</th>
+                            <th>删除课题</th>
+                            <th>发布课题</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="publishProject : ${publishProjects}">
+                                <td th:text="${publishProject['filename']}"></td>
+                                <td th:text="${publishProject['publish']}"></td>
+                                <td><a th:href="@{'/'+${publishProject['url']}}">查看</a></td>
+                                <td><a href="#">删除</a></td>
+<!--                                <td>-->
+<!--                                    <a href="javascript:void(sendBtn(this.getAttribute('data-id')))" th:data-id="${publishProject['filename']}">发布</a>-->
+<!--                                </td>-->
+                                <td th:if="${publishProject['publish']} eq '未发布'">
+                                    <form action="/pj/addProject/" method="get">
+                                        <input type="hidden" name="filename" th:value="${publishProject['filename']}">
+                                        <input type="submit" value="发布">
+                                    </form>
+                                </td>
+                                <td th:unless="${publishProject['publish']} eq '未发布'">
+                                    <form action="/pj/deleteProject/" method="get">
+                                        <input type="hidden" name="filename" th:value="${publishProject['filename']}">
+                                        <input type="submit" value="取消发布">
+                                    </form>
+                                </td>
+                                <td th:unless="${publishProject['publish']} eq '未发布'"/>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../css/my.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Essential javascripts for application to work-->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript" charset="UTF-8">
+        //获取加载页面时要渲染数据
+        $(document).ready(function () {
+            var D = new Date();
+            var y = D.getFullYear();
+            var m = D.getMonth();
+            var d = D.getDate();
+            $("#timeShow").text(y + "年" + (m+1) + "月" + d + "日");
+            getPjsToStu();
+            getStuInfo();
+        });
+        function handler() {
+
+        }
+        function getPjsToStu() {
+            var reqUrl = "/pj/stuGetPjsToStu";
+            $.post(reqUrl.trim(), function (data) {
+                for (var i=0; i<data.length; i++){
+                    //课题组件
+                    $("#showPjs").append("<div class=\"col-md-6\">"+" <div class=\"tile\">\n" +
+                        "        <div class=\"tile-title-w-btn\">\n" +
+                        "            <!-- 课题名字 -->\n" +
+                        "            <h3 id=\"p_name"+ i +"\" class=\"title\"></h3>\n" +
+                        "        </div>\n" +
+                        "        <hr>\n" +
+                        "        <div class=\"tile-body\">\n" +
+                        "            <!-- 技术需求 -->\n" +
+                        "            <p>课题教师：<span  id=\"teacher"+ i +"\"></span></p>\n" +
+                        "    课题需求：<p id=\"need"+ i +"\"></p>\n" +
+                        "            <!-- 课题教师 -->\n" +
+
+                        "            <!-- 课题描述 -->\n" +
+                        "    课题描述：<p id=\"description"+ i +"\"><</p>\n" +
+                        "            <hr>\n" +
+                        "        <a href=\"/pj/showPjInfo/"+ data[i].id+ "\">点击了解详情</a>\n"+
+                        "        </div>\n" +
+                        "    </div>\n"+
+                        "  <div>");
+                    $("#p_name"+i).text(data[i].pName);
+                    $("#need"+i).text(data[i].need);
+                    $("#teacher"+i).text(data[i].tName);
+                    $("#description"+i).text(data[i].description);
+                }
+            })
+        }
+        $(document).ready(handler());
+
+        function getStuInfo() {
+            var reqUrl = "/stu/getInfo";
+            $.post(reqUrl, function (data) {
+                for (var i = 0; i < data.length; i++){
+                    $("#stu_id").text(data[i].id);
+                    $("#stu_name").text(data[i].name);
+                    $("#stu_major").text(data[i].major);
+                }
+            })
+        }
+    </script>
+    <meta charset="utf-8">
+    <title>学生选择课题</title>
+
+</head>
+<body style="width: 98%; background-color: #E3E3E3">
+<div class="app-title">
+    <div style="margin-top: 20px">
+        <h1><i class="fa fa-laptop" style="margin-left: 20px"></i> 毕业课题选择</h1>
+        <br>
+        <b style="margin-left: 30px">学号：<span id="stu_id" style="font-style: normal;margin-left: 30px;color: darkblue"></span></b><br>
+        <b style="margin-left: 30px">姓名：<span id="stu_name" style="font-style: normal;margin-left: 30px;color: darkblue"></span></b><br>
+        <b style="margin-left: 30px">专业：<span id="stu_major" style="font-style: normal;margin-left: 30px;color: darkblue"></span></b><br>
+        <b><p id="timeShow" style="font-style: normal;margin-left: 30px"></p></b>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">进行课题选择</li>
+        <li class="breadcrumb-item"><a href="#">所有课题</a></li>
+
+    </ul>
+</div>
+<div class="clearfix"></div>
+<div id="showPjs" class="row" style="background-color: #E3E3E3">
+
+</div>
+
+</div>
+</body>
+</html>

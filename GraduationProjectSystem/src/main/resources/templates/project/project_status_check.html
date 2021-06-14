@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<!--suppress ALL-->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="../css/main.css">
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="../../js/plugins/dataTables.bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function test(a) {
+            window.location.href = a;
+        }
+    </script>
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css"
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-bordered" id="sampleTable">
+                        <thead>
+                        <tr>
+                            <th>课题名称</th>
+                            <th>需要技术</th>
+                            <th>指导老师</th>
+                            <th>审核状态</th>
+                            <th>选择状态</th>
+                            <th>特殊选课</th>
+                            <th>查看详细</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="data : ${datas}">
+                                <td th:text="${data['project'].projectname}"/>
+                                <td th:text="${data['project'].need}"/>
+                                <td th:text="${data['teacher'].teachername}"/>
+
+                                <td th:if="${data['project'].status}">已审核</td>
+                                <td th:unless="${data['project'].status}">未审核</td>
+
+                                <td th:if="${data['project'].choose}">已选</td>
+                                <td th:unless="${data['project'].choose}">未选</td>
+
+                                <td th:if="${data['project'].specialproject}">是</td>
+                                <td th:unless="${data['project'].specialproject}">否</td>
+
+                                <td><a th:href="@{'../'+${data['project'].contentfilename}}">查看</a></td>
+                            </tr>
+                        </div>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

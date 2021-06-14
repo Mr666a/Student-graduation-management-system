@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../css/my.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Essential javascripts for application to work-->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            //获取课题id
+            var id = $("#pid").text().trim();
+            getPjInfoByID(id);
+
+        });
+        function handler() {
+
+        }
+        $(document).ready(handler());
+        function getPjInfoByID(id) {
+            var reqUrl = "/pj/getInfoByID";
+            var reqParam = "id=" + id;
+            var result;
+            $.post(reqUrl, reqParam, function (data) {
+                for (var i=0; i < data.length; i++){
+
+                    $("#submitPj").attr("href", "/pj/selectPj?pid=" + id);
+                    $("#cancelPj").attr("href", "/pj/cancelPj?pid=" + id);
+                    $("#title").text(data[i].pName);
+                    $("#teacher").text(data[i].tName);
+                    $("#need").text(data[i].need);
+                    $("#description").text(data[i].description);
+                    showH5File(id);
+                }
+            });
+        }
+        function showH5File(id) {
+            var reqUrl = "/pj/showH5File";
+            var reqParam = "id=" + id;
+            $.post(reqUrl,reqParam, function (data) {
+                // $("#info").append(data);
+
+                $("#info").attr("src", data)
+                console.log(data);
+            });
+
+
+        }
+    </script>
+    <title>查看课题</title>
+</head>
+<body style="width: 98%; background-color: #E3E3E3">
+<div class="app-title">
+    <div style="margin-top: 20px">
+        <h1  style="margin-left: 20px"><i class="fa fa-edit"></i> 课题详情</h1>
+    </div>
+    <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">进行课题选择</li>
+        <li class="breadcrumb-item">查看所有课题</li>
+        <li class="breadcrumb-item"><a href="#">课题详情</a></li>
+    </ul>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="tile">
+            <h3 id="title" class="tile-title">课题标题</h3>
+            <div class="tile-body">
+                <div class="form-group">
+                    <label class="control-label">课题ID</label>
+                    <span id="pid" class="form-control no-l-r-t-border" th:text="${id}"></span>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">指导教师</label>
+                    <label id="teacher" class="form-control no-l-r-t-border" type="text" placeholder="Enter full name"></label>
+                </div>
+                <hr>
+                <div class="form-group">
+                    <label class="control-label">需求技术</label>
+                    <label id="need" class="form-control no-l-r-t-border" type="email" placeholder="Enter email address"></label>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">课题描述</label>
+                    <textarea id="description" readonly="readonly" style="background-color: white;" class="form-control" rows="4"></textarea>
+                </div>
+                <hr>
+                <div class="tile">
+                    <h3 style="margin-left: 40px">选题操作</h3>
+                    <hr>
+                    <br>
+<!--                    <a id="submitPj" href="" class="btn btn-primary" style="background-color: #000000;color: white;margin-left: 40px"><i class="fa fa-fw fa-lg fa-check-circle"></i>提交选题</a><br><br>-->
+                    <a id="cancelPj" href="" class="btn btn-secondary" style="margin-left: 40px" ><i class="fa fa-fw fa-lg fa-times-circle"></i>取消选课</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9" >
+        <div class="tile">
+
+<!--            <div id="info" class="tile-body" style="height: 720px;overflow: auto">-->
+
+<!--            </div>-->
+            <iframe id="info" src=""  style="width: 100%;height: 690px;overflow: auto"></iframe>
+
+        </div>
+    </div>
+
+
+</div>
+</div>
+
+</body>
+</html>

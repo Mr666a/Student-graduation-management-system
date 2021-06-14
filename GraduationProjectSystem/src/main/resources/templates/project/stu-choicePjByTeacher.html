@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../css/my.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Essential javascripts for application to work-->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var D = new Date();
+            var y = D.getFullYear();
+            var m = D.getMonth();
+            var d = D.getDate();
+            $("#timeShow").text(y + "年" + (m+1) + "月" + d + "日");
+            getTeachers();
+        });
+        function handler(){
+
+        }
+        $(document).ready(handler());
+
+        function getTeachers() {
+            var reqUrl = "/teacher/getTeachers";
+            var result = "";
+            $.post(reqUrl, function (data) {
+                for (var i=0; i<data.length; i++){
+                    result +="<option value='"+ data[i].teacherId + "'>"+ "工号: " +data[i].teacherId+
+                        "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+ "教师姓名: "+data[i].teacherName+"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+"专业: "+data[i].majorName +"</option>"
+                }
+                $("#teacherId").append(result);
+            });
+        }
+        function getPjsByTeacher() {
+            var reqUrl = "/pj/getPjsByTeacher";
+            //获取teacherID
+            var teacherID = $("#teacherId option:selected").val();
+            var reqParam = "teacherId=" + teacherID;
+            $.post(reqUrl, reqParam, function (data) {
+                $("#showPjs").empty();
+                for (var i=0; i<data.length; i++){
+
+                    $("#showPjs").append("<div class=\"col-md-6\">"+" <div class=\"tile\">\n" +
+                        "        <div class=\"tile-title-w-btn\">\n" +
+                        "            <!-- 课题名字 -->\n" +
+                        "            <h3 id=\"p_name"+ i +"\" class=\"title\"></h3>\n" +
+                        "        </div>\n" +
+                        "        <hr>\n" +
+                        "        <div class=\"tile-body\">\n" +
+                        "            <!-- 技术需求 -->\n" +
+                        "    <p>课题教师：<span  id=\"teacher"+ i +"\"></span></p>\n" +
+                        "    课题需求：<p id=\"need"+ i +"\"></p>\n" +
+                        "            <!-- 课题教师 -->\n" +
+
+                        "            <!-- 课题描述 -->\n" +
+                        "    课题描述：<p id=\"description"+ i +"\"></p>\n" +
+                        "            <hr>\n" +
+                        "        <a href=\"/pj/showPjInfo/"+ data[i].id+ "\">点击了解详情</a>\n"+
+                        "        </div>\n" +
+                        "    </div>\n"+
+                        "  <div>");
+                    $("#p_name"+i).text(data[i].pName);
+                    $("#need"+i).text(data[i].need);
+                    $("#teacher"+i).text(data[i].tName);
+                    $("#description"+i).text(data[i].description);
+                }
+            })
+
+        }
+
+    </script>
+    <title>查看课题教师</title>
+</head>
+<body style="width: 98%; background-color: #E3E3E3">
+<div class="app-title">
+    <div style="margin-top: 20px">
+        <h1><i class="fa fa-laptop" style="margin-left: 20px"></i> 毕业课题选择</h1>
+        <br>
+        <b><p id="timeShow" style="font-style: normal;margin-left: 30px"></p></b>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">进行课题选择</li>
+        <li class="breadcrumb-item"><a href="#">查询课题教师</a></li>
+
+    </ul>
+</div>
+
+<div class="row">
+    <div class="col-md-12" >
+        <div class="tile">
+            <div class="tile-body">
+                <select id="teacherId" class="form-control"></select>
+                <input id="searchBtn" value="查询" type="button" class="primary btn-block" style="margin-top: 20px" onclick="getPjsByTeacher()">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>
+    <div id="showPjs" class="row" style="background-color: #E3E3E3">
+</div>
+</body>
+</html>

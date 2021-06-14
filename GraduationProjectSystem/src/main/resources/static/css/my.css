@@ -1,0 +1,9 @@
+.no-l-r-t-border{
+    border-top: 0px;
+    border-left: 0px;
+    border-right: 0px;
+}
+.cart-border{
+    border: black 3px solid;
+    border-radius: 5px;
+}

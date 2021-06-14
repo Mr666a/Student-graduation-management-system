@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../../css/main.css">
+    <link rel="stylesheet" type="text/css" href="../../css/my.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Essential javascripts for application to work-->
+    <script src="../../js/jquery-3.3.1.min.js"></script>
+    <script src="../../js/popper.min.js"></script>
+    <script src="../../js/bootstrap.min.js"></script>
+    <script src="../../js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="../../js/plugins/pace.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var D = new Date();
+            var y = D.getFullYear();
+            var m = D.getMonth();
+            var d = D.getDate();
+            $("#timeShow").text(y + "年" + (m+1) + "月" + d + "日");
+            getProgress();
+            getPjInfo();
+        })
+
+        function getProgress() {
+            var reqUrl = "/stu/getProcess";
+            $.get(reqUrl, function (data) {
+                console.log(data)
+                for (var i=0; i<data.length; i++){
+                    switch (data[i].percentage) {
+                        case 25:{
+                            $("#pg").css("width", "25%");
+                            $("#pg").attr("aria-valuenow", "25");
+                            $("#msg").text(data[i].progressMsg);
+                        }break;
+                        case 50:{
+                            $("#pg").css("width", "50%");
+                            $("#pg").attr("aria-valuenow", "50");
+                            $("#msg").text(data[i].progressMsg);
+                        }break;
+                        case 75:{
+                            $("#pg").css("width", "75%");
+                            $("#pg").attr("aria-valuenow", "75");
+                            $("#msg").text(data[i].progressMsg);
+                        }break;
+                        case 100:{
+                            $("#pg").css("width", "100%");
+                            $("#pg").attr("aria-valuenow", "100");
+                            $("#msg").text(data[i].progressMsg);
+                        }break;
+                        default:{
+                            $("#pg").css("width", "0%");
+                            $("#pg").attr("aria-valuenow", "0");
+                        }break;
+                    }
+                }
+            })
+        }
+        //发送post请求获取选课信息
+        function getPjInfo() {
+            var reqUrl = "/pj/getPjInfoByStu";
+            $.post(reqUrl, function (data) {
+                for (var i = 0; i<data.length; i++){
+                    console.log(data);
+                    if (data[i].choice){
+                        $("#selectPj").empty();
+                        $("#selectPj").append("<label>所选课题:</label>\n" +
+                            "                        <label id=\"p_name\"></label><br>\n" +
+                            "                        <label>课题负责教师：</label>\n" +
+                            "                        <label id=\"p_teacher\"></label><br>\n" +
+                            "                        <label>课题描述：</label>\n" +
+                            "                        <label id=\"p_description\"></label><br>\n" +
+                            "                        <label>选题时间：</label>\n" +
+                            "                        <label id=\"p_time\"></label><br>\n" +
+                            "                        <label>课题截止日期：</label>\n" +
+                            "                        <label id=\"p_last\"></label><br>");
+                        $("#p_name").text(data[i].pName);
+                        $("#p_description").text("基于springboot的项目");
+                        $("#p_time").text(data[i].pDate);
+                        $("#p_teacher").text(data[i].tName);
+                        $("#p_last").text(data[i].pLast);
+                        $("#is").text("已选课题：" + data[i].pName);
+                    }
+                }
+            });
+        }
+        function uploadFile() {
+            var v = $("#up option:selected").val();
+            var reqUrl = "/pg/getProgress/"+v;
+            $.post(reqUrl, v, function (data) {
+                for (var i=0; i<data.length; i++){
+                    switch (data[i].percentage) {
+                        case 25:{
+                            $("#pg").css("width", "25%");
+                            $("#pg").attr("aria-valuenow", "25");
+                            $("#msg").text(data[i].progressMsg);
+                            $("#tip").text("教师审核通过！");
+                            $("#advince").text("请准备下一个过程的工作！")
+                        }break;
+                        case 50:{
+                            $("#pg").css("width", "50%");
+                            $("#pg").attr("aria-valuenow", "50");
+                            $("#msg").text(data[i].progressMsg);
+                            $("#tip").text("教师审核通过！");
+                            $("#advince").text("请准备下一个过程的工作！")
+                        }break;
+                        case 75:{
+                            $("#pg").css("width", "75%");
+                            $("#pg").attr("aria-valuenow", "75");
+                            $("#msg").text(data[i].progressMsg);
+                            $("#tip").text("教师审核通过！");
+                            $("#advince").text("请准备下一个过程的工作！")
+                        }break;
+                        case 100:{
+                            $("#pg").css("width", "100%");
+                            $("#pg").attr("aria-valuenow", "100");
+                            $("#msg").text(data[i].progressMsg);
+                            $("#tip").text("教师审核通过、专业负责人审核通过！");
+                            $("#advince").text("恭喜你完成了课题，请准备答辩！")
+                        }break;
+                        default:{
+                            $("#pg").css("width", "0%");
+                            $("#pg").attr("aria-valuenow", "0");
+                        }break;
+                    }
+                }
+
+            });
+        }
+    </script>
+    <title>进度管理</title>
+</head>
+<body body style="width: 98%; background-color: #E3E3E3">
+<div class="app-title">
+    <div style="margin-top: 20px">
+        <h1><i class="fa fa-laptop" style="margin-left: 20px"></i> 毕业课题选择</h1>
+        <br>
+        <b><p id="timeShow" style="font-style: normal;margin-left: 30px"></p></b>
+
+    </div>
+    <ul class="app-breadcrumb breadcrumb" style="margin-right: 30px">
+        <li class="breadcrumb-item"><i class="fa fa-home fa-lg"></i></li>
+        <li class="breadcrumb-item">进度管理</li>
+
+    </ul>
+</div>
+
+
+<div style="width: 100%">
+    <div class="col-md-12">
+        <div class="tile">
+            <h3 class="tile-title">学生选题情况</h3>
+            <hr>
+            <div id="selectPj" class="tile-body">
+                <h5>暂无选择课题！</h5>
+            </div>
+            <div class="tile-footer"><a class="btn btn-primary" href="#">查看详细</a></div>
+        </div>
+    </div>
+</div>
+<h3>进度:&nbsp;&nbsp;</h3><p id="msg" style="font-size: xx-large;color: red"></p>
+<div class="bs-component">
+    <div class="progress mb-2">
+        <div id="pg" class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>
+</div>
+
+<div style="margin-top: 50px" class="row">
+    <div class="col-md-6">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">上传课题成品</h3>
+            </div>
+            <div class="tile-body">
+                <b>请按要求上传</b><br>
+                <hr>
+                <input class="form-control-file" id="exampleInputFile" type="file" aria-describedby="fileHelp">
+                <select id="up" class="form-control" style="margin-top: 30px;margin-bottom: 30px">
+                    <option value="50">提交课题计划文档</option>
+                    <option value="75">提交课题成品和测试文档</option>
+                    <option value="100">提交课题成品展示文档</option>
+                </select>
+                <input id="sb" type="button" class="form-control primary" value="确定" onclick="uploadFile()"/>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-md-6">
+        <div class="tile">
+            <div class="tile-title-w-btn">
+                <h3 class="title">进度审核</h3>
+            </div>
+            <hr>
+            <div class="tile-body" style="height: 180px">
+                <span id="tip" style="color: red;font-weight: bolder">由指导老师审核中...</span><br>
+                <br>
+                <span id="advince">通知：需要按要求完成文档格式</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

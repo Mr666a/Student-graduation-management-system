@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Main CSS-->
+    <link rel="stylesheet" type="text/css" href="css/main.css">
+    <!-- Font-icon css-->
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>登录系统</title>
+  </head>
+  <body>
+    <section class="material-half-bg">
+      <div class="cover"></div>
+    </section>
+    <section class="login-content">
+      <div class="logo">
+        <h1>毕业论文（设计）选题系统</h1>
+      </div>
+      <div class="login-box">
+        <form id="loginForm" class="login-form" action="/sid_login">
+          <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>登录</h3>
+          <div class="form-group">
+            <label class="control-label">学号或工号</label>
+            <input id="id" name="sid" class="form-control" type="text" placeholder="学号/工号" autofocus>
+          </div>
+          <div class="form-group">
+            <label class="control-label">密码</label>
+            <input name="password" class="form-control" type="password" placeholder="密码">
+          </div>
+          <div class="form-group">
+            <div class="utility">
+              <div class="animated-checkbox">
+                <label>
+                  <input type="checkbox"><span class="label-text">保持登录状态</span>
+                </label>
+              </div>
+              <p class="semibold-text mb-2"><a href="#" data-toggle="flip" style="color: #222d32;">忘记密码</a></p>
+            </div>
+          </div>
+          <div class="form-group btn-container">
+<!--            <button id="login" class="btn btn-primary btn-block">登录</button>-->
+            <input id="loginBtn" type="button" class="btn btn-primary btn-block" value="登录"/>
+          </div>
+        </form>
+        <div id="pwdInfo">
+            <form id="forgetForm" class="forget-form">
+                <h3 class="login-head"><i class="fa fa-lg fa-fw fa-lock"></i>忘记密码 ?</h3>
+                <div class="form-group">
+                    <input id="stuId" class="form-control" name="sid" type="text" placeholder="工号/学号">
+                    <p></p>
+
+                    <input class="form-control" name="id" type="text" placeholder="身份证后6位">
+                </div>
+                <div class="form-group btn-container">
+                    <input id="findBtn" type="button" class="btn btn-primary btn-block" value="找回密码"/>
+                </div>
+                <div class="form-group mt-3">
+                    <p class="semibold-text mb-0"><a href="/login" data-toggle="flip"><i class="fa fa-angle-left fa-fw"></i> 返回登录</a></p>
+                </div>
+            </form>
+        </div>
+
+      </div>
+    </section>
+    <!-- Essential javascripts for application to work-->
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <!-- The javascript plugin to display page loading on top-->
+    <script src="js/plugins/pace.min.js"></script>
+
+    <script type="text/javascript">
+
+        function validateId(){
+            //获取用户输入的账号id
+            var inputId = $("#id").val();
+            //正则表达式，匹配数字
+            var reg = /^[1-9][0-9]+$/gi;
+            if (reg.test(inputId)){
+
+            }else{
+                alert("学号或工号必须是数字,请输入正确的格式！");
+                return null;
+            }
+            //学生用户id
+            if (inputId.length==10){
+                return "/sid_login";
+            }else if (inputId.length>=4 && inputId.length<=6){
+                //教师、教务员id
+                return "/eid_login";
+            }else {
+                alert("长度格式不正确!");
+                return null;
+            }
+
+        }
+        $("#loginBtn").click(function () {
+            var reqUrl = $("#loginForm").attr("action");
+            var reqParams = $("#loginForm").serialize();
+            reqUrl = validateId();
+            if (reqUrl != null){
+                $.post(reqUrl, reqParams, function (data) {
+                    console.log(data);
+                    switch ($.trim(data)) {
+                        case "success":window.location.replace("/stuIndex");break;
+                        case "successT":window.location.replace("/teachIndex");break;
+                        case "successL":window.location.replace("/adminIndex");break;
+                        case "errorPwd":alert("密码输入错误,请重新输入!");break;
+                        case "noExist":alert("用户不存在,请检查工号或学号是否正确!");break;
+                    }
+                });
+            }
+        });
+
+
+
+
+        $("#findBtn").click(function () {
+            var reqUrl = "/findPassword";
+            var studentId = $("#stuId").val();
+            console.log(studentId);
+            var reqParam = $("#forgetForm").serialize();
+            $.post(reqUrl, reqParam, function (data) {
+                if (data == "Ok"){
+                    $("#pwdInfo").empty();
+                    $("#pwdInfo").append("<form id=\"resetForm\" class=\"forget-form\">\n" +
+                        "            <h3 class=\"login-head\"><i class=\"fa fa-lg fa-fw fa-lock\"></i>重置密码</h3>\n" +
+                        "        <div class=\"form-group\">\n" +
+                        "            <input class=\"form-control\" id='p1' name=\"newPwd\" type=\"text\" placeholder=\"新密码\">\n" +
+                        "            <p></p>\n" +
+                        "            <input type='hidden' name='mid' value=\'" + studentId + "\'\/>\n" +
+                        "            <input class=\"form-control\" id='p2' name=\"newPwds\" type=\"password\" placeholder=\"确认新密码\">\n" +
+                        "            </div>\n" +
+                        "            <div class=\"form-group btn-container\">\n" +
+                        "            <input id=\"resetBtn\" type=\"button\" class=\"btn btn-primary btn-block\" value=\"重置\"/>\n" +
+                        "            </div>\n" +
+                        "            <div class=\"form-group mt-3\">\n" +
+                        "            <p class=\"semibold-text mb-0\"><a href=\"/\" data-toggle=\"flip\"><i class=\"fa fa-angle-left fa-fw\"></i> 返回登录</a></p>\n" +
+                        "        </div>\n" +
+                        "        </form>");
+                    $("#mid").attr("value", studentId);
+                    $("#resetBtn").click(function () {
+                        var reqUrl = "/changePassword";
+                        var reqParam = $("#resetForm").serialize();
+                        $.post(reqUrl, reqParam, function (data) {
+                            console.log(data)
+                            $("#p1").val("");
+                            $("#p2").val("");
+                            alert("重置成功！");
+                        });
+                    });
+
+                }else if (data == "No"){
+                    alert("信息错误!");
+                }else {
+                    alert("账号不存在！");
+                }
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+      // Login Page Flipbox control
+      $('.login-content [data-toggle="flip"]').click(function() {
+      	$('.login-box').toggleClass('flipped');
+      	return false;
+      });
+    </script>
+  </body>
+</html>

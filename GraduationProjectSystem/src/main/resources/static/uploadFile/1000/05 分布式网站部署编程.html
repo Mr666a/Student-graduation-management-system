@@ -1,0 +1,140 @@
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">.b1{white-space-collapsing:preserve;}
+.b2{margin: 1.0in 1.25in 1.0in 1.25in;}
+.s1{font-weight:bold;color:red;}
+.p1{text-align:center;hyphenate:auto;font-family:Times New Roman;font-size:16pt;}
+.p2{text-align:start;hyphenate:auto;font-family:Times New Roman;font-size:14pt;}
+.p3{text-align:justify;hyphenate:auto;font-family:Times New Roman;font-size:10pt;}
+</style>
+<meta content="WIN" name="author">
+</head>
+<body class="b1 b2">
+<p class="p1">
+<span class="s1">第五个实验：分布式网站编程</span>
+</p>
+<p class="p2">
+<span class="s1">实验目的：学习网站分布的简单部署，数据库必须采用分布的数据库，本实验采用jsp连接红帽子的集群mysql。</span>
+</p>
+<p class="p3">
+<span>&lt;%</span>
+</p>
+<p class="p3">
+<span>response.setCharacterEncoding("GBK");</span>
+</p>
+<p class="p3">
+<span>//response.setContentType("text/html;charset=GBK");//设置传输编码</span>
+</p>
+<p class="p3">
+<span>String ip = request.getHeader("x-forwarded-for");  </span>
+</p>
+<p class="p3">
+<span>if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))</span>
+</p>
+<p class="p3">
+<span> {  </span>
+</p>
+<p class="p3">
+<span>    ip = request.getHeader("Proxy-Client-IP");  </span>
+</p>
+<p class="p3">
+<span>  }  </span>
+</p>
+<p class="p3">
+<span>if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))</span>
+</p>
+<p class="p3">
+<span> {  </span>
+</p>
+<p class="p3">
+<span>      ip = request.getHeader("WL-Proxy-Client-IP");  </span>
+</p>
+<p class="p3">
+<span>  }   </span>
+</p>
+<p class="p3">
+<span>if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))</span>
+</p>
+<p class="p3">
+<span> {  </span>
+</p>
+<p class="p3">
+<span>     ip = request.getRemoteAddr();  </span>
+</p>
+<p class="p3">
+<span>  }  </span>
+</p>
+<p class="p3"></p>
+<p class="p3">
+<span>int n = ip.lastIndexOf(".");</span>
+</p>
+<p class="p3">
+<span>String ip2 = ip.substring(n+1);</span>
+</p>
+<p class="p3">
+<span>out.println("你的ip="+ip+"&lt;br&gt;");</span>
+</p>
+<p class="p3">
+<span>out.println("你的ip的最后一组数是："+ip2+"&lt;br&gt;");</span>
+</p>
+<p class="p3">
+<span>int ip3=Integer.parseInt(ip2);</span>
+</p>
+<p class="p3">
+<span>out.println("最后一组数转成整数是："+ip3+"&lt;br&gt;");</span>
+</p>
+<p class="p3">
+<span>int ip4=(ip3)%3;</span>
+</p>
+<p class="p3">
+<span>out.println("ip地址最后一个数模除3余数是："+ip4);</span>
+</p>
+<p class="p3">
+<span>//下面是根据余数进行分布式跳转，达到平衡网站压力；</span>
+</p>
+<p class="p3">
+<span>//下面三个网站数据必须连接红帽子mysql_cluster</span>
+</p>
+<p class="p3">
+<span>if(ip4 == 0){</span>
+</p>
+<p class="p3">
+<span>response.sendRedirect("http://172.16.81.141");</span>
+</p>
+<p class="p3">
+<span>}</span>
+</p>
+<p class="p3">
+<span>else if(ip4 == 1){</span>
+</p>
+<p class="p3">
+<span>response.sendRedirect("http://172.16.81.150");</span>
+</p>
+<p class="p3">
+<span>}</span>
+</p>
+<p class="p3">
+<span>else if(ip4 == 2){</span>
+</p>
+<p class="p3">
+<span>response.sendRedirect("http://172.16.81.151");</span>
+</p>
+<p class="p3">
+<span>}</span>
+</p>
+<p class="p3">
+<span>else</span>
+</p>
+<p class="p3">
+<span>{</span>
+</p>
+<p class="p3">
+<span>out.println("很遗憾，你的网络不通，不能打开网页！");}</span>
+</p>
+<p class="p3"></p>
+<p class="p3">
+<span>%&gt;</span>
+</p>
+</body>
+</html>
